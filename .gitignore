@@ -3,3 +3,6 @@
 .Rdata
 .httr-oauth
 .DS_Store
+WeatherMaringa.Rcheck/
+WeatherMaringa*.tar.gz
+WeatherMaringa*.tgz

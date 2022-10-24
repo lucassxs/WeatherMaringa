@@ -5,3 +5,6 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^WeatherMaringa\.Rcheck$
+^WeatherMaringa.*\.tar\.gz$
+^WeatherMaringa.*\.tgz$
