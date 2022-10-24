@@ -122,9 +122,8 @@ bdmep_description <- function() {
 ##' @importFrom dplyr %>%
 ##' @return A data frame is returned with metadata, including the stations
 ##'  \code{id}, and coordinates (\code{lon}, \code{lat}, \code{alt})
-##' @author Jonatan Tatsch
 
-bdmep_coords <- function(){
+station_data_coords <- function(){
   # omm id, lat, lon, alt
   link_stns_info <- "http://www.inmet.gov.br/sim/sonabra/index.php"
 
@@ -172,24 +171,8 @@ bdmep_coords <- function(){
 
 
 ##' Get basic information on meteorological station from INMET
-##'
-##' This function is used to find the OMM station ID that can be
-##' used to import BDMEP data using \code{\link{bdmep_import}}
-##' @description Get OMM code, state and station name on meteorological stations from INMET
-##' \url{http://www.inmet.gov.br/projetos/rede/pesquisa/lista_estacao.php}
-##' @importFrom dplyr %>%
-##' @return a data frame is returned with
-##'  \code{name}, \code{state}, \code{id}
-##' @author Jonatan Tatsch
-##' @examples
-##'
-##' \dontrun{
-##' # tyr get information from inmet web site
-##' stns <- bdmep_stations()
-##' head(stns, 15)
-##' #save(stns, file = "data/stns.rda")
-##' }
-bdmep_stations <- function(){
+
+station_data_stations <- function(){
   link_stns_l <- "http://www.inmet.gov.br/projetos/rede/pesquisa/lista_estacao.php"
   tab <- httr::GET(link_stns_l) %>%
     httr::content('text') %>%
