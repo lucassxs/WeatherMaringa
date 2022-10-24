@@ -32,31 +32,30 @@ station_data <- function(x){
     magrittr::extract((rowheader+1) : (length(x)-1)) %>%
     stringr::str_replace(";$", "")
 
-  bdmepd <- read.csv2(text = x_clean,
+  station_data <- read.csv2(text = x_clean,
                       header = FALSE,
                       stringsAsFactors = FALSE,
                       na.strings = "")
 
   # stop if there is conflict between ncol(x) and length(hvec)
-  if (ncol(bdmepd) != length(vnames)) {
-    print(head(bdmepd))
-    cat("ncol(x) = ", ncol(bdmepd), "\n",
+  if (ncol(station_data) != length(vnames)) {
+    print(head(station_data))
+    cat("ncol(x) = ", ncol(station_data), "\n",
         "hvec = ", vnames, "\n", "\n")
 
     stop("num. of data columns does not match the num. of variables")
   } else {
-    names(bdmepd) <- vnames
+    names(station_data) <- vnames
   }# end if
 
-  #bdmepd_bck <- bdmepd
 
   # coercion to numeric due to na.strings = ""
-  sel_vars <- names(bdmepd)[!names(bdmepd) %in% c("codigo","data", "hora")]
-  bdmepd <- bdmepd %>%
+  sel_vars <- names(station_data)[!names(station_data) %in% c("codigo","data", "hora")]
+  station_data <- station_data %>%
     dplyr::mutate_at(sel_vars, dplyr::funs(as.numeric))
 
   ## date conversion
-  bdmepd <- bdmepd %>%
+  station_data <- station_data %>%
     dplyr::mutate(hora = doBy::recodeVar(as.character(hora),
                                          src = as.list(c("1800","0","1200")),
                                          tgt = as.list(c("18:00","00:00","12:00"))
@@ -71,7 +70,7 @@ station_data <- function(x){
     id = as.character(codigo),
     codigo = NULL)
   # reorder columns
-  bdmepd <- bdmepd %>%
+  station_data <- station_data %>%
     dplyr::select(date, id, prec:ws, -tcomp)
 
   # duplicated rows
@@ -108,7 +107,7 @@ set_bdmep_user <- function(lnk, email, passwd){
   return(l)
 }
 
-bdmep_import_station <- function(.id = "83488" ,
+station_data_import_station <- function(.id = "83488" ,
                                  .sdate = "01/01/1961",
                                  .edate = format(Sys.Date(), '%d/%m/%Y'),
                                  .email = "your-email",
@@ -118,7 +117,7 @@ bdmep_import_station <- function(.id = "83488" ,
                                  ...){
   # step 1 - login
   link <- "http://www.inmet.gov.br/projetos/rede/pesquisa/inicio.php"
-  bdmep_form_l <- set_bdmep_user(link, .email, .passwd)
+  station_data_form_l <- set_station_data_user(link, .email, .passwd)
   r <- httr::POST(link, body = bdmep_form_l, encode = "form")
 
   if (httr::status_code(r) == 200 & .verbose) {
@@ -176,7 +175,7 @@ bdmep_import_station <- function(.id = "83488" ,
 }
 
 
-station_data_import <- function(id = c("83936", "83967") ,
+station_data_data_import <- function(id = c("83936", "83967") ,
                          sdate = "01/01/1961",
                          edate = format(Sys.Date(), '%d/%m/%Y'),
                          email = "your@email.com",
@@ -208,7 +207,7 @@ station_data_import <- function(id = c("83936", "83967") ,
 }
 
 
-station_data_template <- function(.id, .req_status){
+station_data_data_template <- function(.id, .req_status){
   varnames <- bdmep_description()[, "varname"]
   templ_df <- as.data.frame(t(rep(NA, length(varnames))), stringsAsFactors = FALSE)
   templ_df <- templ_df %>%
