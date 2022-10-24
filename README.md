@@ -16,6 +16,6 @@ You can install the development version of WeatherMaringa like so:
 # devtools::install_github("lucassxs/WeatherMaringa")
 ```
 
-## Example
+## To Do
 
-This is a basic example which shows…
+\[\] Fix API
