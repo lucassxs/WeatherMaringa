@@ -107,7 +107,11 @@ set_bdmep_user <- function(lnk, email, passwd){
   return(l)
 }
 
+<<<<<<< HEAD
 station_data_import_station <- function(.id = "A835" , #maringa
+=======
+station_data_import_station <- function(.id = "83488" ,
+>>>>>>> bdf1923b4a2ff28e01531324cb196d5a766ba488
                                  .sdate = "01/01/1961",
                                  .edate = format(Sys.Date(), '%d/%m/%Y'),
                                  .email = "your-email",
