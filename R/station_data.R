@@ -1,19 +1,4 @@
-##' Read data downaloaded from BDMEP
-##'
-##' Read and tidy data downloaded with \code{\link{bdmep_import}}
-##'
-##' @importFrom utils read.csv2 head
-##'
-##' @details A minimum quality control check is applied to the data
-##' This include: a chronological sequence check; filling missing dates with NA;
-##' remove duplicated data; aggregate time and date information into a POSIX object
-##'
-##' @param x a numeric vector with the meteorological station code
-##'
-##' @return a data frame with variables in columns and observations along rows
-##' @author Jonatan Tatsch
-##'
-bdmep_read <- function(x){
+station_data <- function(x){
 
   # find line with variables names
   rowheader <- x %>%
@@ -94,18 +79,7 @@ bdmep_read <- function(x){
 
   return(bdmepd)
 
-}## end function readInmet
-
-
-#' Set username and password to login BDMEP
-#'
-#' @param lnk url to BDMEP access
-#' @param email your BDMEP username
-#' @param passwd your BDMEP password
-#'
-##' @return a named list with user name, password and text of button access
-##' @author Jonatan Tatsch
-##'
+}
 set_bdmep_user <- function(lnk, email, passwd){
   txt <- httr::GET(lnk)
   attrs_name_passwd_bt <- txt %>%
@@ -134,27 +108,6 @@ set_bdmep_user <- function(lnk, email, passwd){
   return(l)
 }
 
-
-##' Import data of a meteorological station
-##'
-##' @importFrom stats setNames
-##' @importFrom dplyr %>%
-##'
-##' @details The data are in sub-daily time scale. A minimum data quality control is applied to the data.
-##' This include: a chronological sequence check; filling data from missing dates with NA;
-##' remove duplicated data. Time variables (year, month, day, hour) are aggregated into a POSIX object in UTC
-##'
-##' @param .id a character vector with the meteorological station code
-##' @param .sdate start date in "d/m/Y" format
-##' @param .edate end date in "d/m/Y" format, default values \code{format(Sys.Date(), "\%d/\%m/\%Y")}
-##' @param .email e-mail to access BDMEP
-##' @param .passwd password to access BDMEP
-##' @param .verbose Optional. Logical. If set to TRUE (default), print messages.
-##' @param .destdir Optional. Character Local file path to write file out to.If NULL (default) files are not written to disk.
-##' @param ... Additional arguments for the underlying export functions (see \code{\link{write_csv}}).
-##' @return a data frame with variables in columns (see \code{\link{bdmep_description}}) and observations (date and time) along rows.
-##' @author Jonatan Tatsch
-##'
 bdmep_import_station <- function(.id = "83488" ,
                                  .sdate = "01/01/1961",
                                  .edate = format(Sys.Date(), '%d/%m/%Y'),
@@ -222,38 +175,8 @@ bdmep_import_station <- function(.id = "83488" ,
   return(xtidy)
 }
 
-##' Import data from Brazilian meteorological stations
-##'
-##' @importFrom dplyr %>%
-##' @details The data are in sub-daily time scale. A minimum data quality control is applied to the data.
-##' This include: a chronological sequence check; filling data from missing dates with NA;
-##' remove duplicated data. Time variables (year, month, day, hour) are aggregated into a POSIX object in UTC
-##'
-##' @param id A character vector with codes of meteorological stations
-##' @param sdate Start date in "d/m/Y" format
-##' @param edate End date in "d/m/Y" format, default values \code{format(Sys.Date(), "\%d/\%m/\%Y")}
-##' @param email E-mail to access BDMEP
-##' @param passwd Password to access BDMEP
-##' @param verbose If TRUE, prints login sucessfull.
-##' @param destdir A character string with the path where the downloaded data is saved. If it is  NULL, data will not be saved in disk.
-##' @param ... Additional arguments for the underlying function \code{\link{write_csv}}.
-##'
-##' @return A data frame with variables in columns (see \code{\link{bdmep_description}}) and observations (date and time) along rows.
-##' @export
-##' @author Jonatan Tatsch
-##' @examples
-##' # download data for Santa Maria and Porto Alegre
-##' metdata <- bdmep_import(id = c("83936", "83967"),
-##'                         sdate = "01/01/1961",
-##'                         edate = format(Sys.Date(), '%d/%m/%Y'),
-##'                         email = "your@email.com",
-##'                         passwd = "your-password",
-##'                         verbose = TRUE)
-##' head(metdata)
-##' tail(metdata)
-##' summary(metdata)
-##'
-bdmep_import <- function(id = c("83936", "83967") ,
+
+station_data_import <- function(id = c("83936", "83967") ,
                          sdate = "01/01/1961",
                          edate = format(Sys.Date(), '%d/%m/%Y'),
                          email = "your@email.com",
@@ -285,16 +208,7 @@ bdmep_import <- function(id = c("83936", "83967") ,
 }
 
 
-#' Template bdmep dataframe to be used when the status of a request was not successfully executed.
-#'
-#' @details This is used when the status of a request code is not 200.
-#'
-#' @param .id a character scalar with the meteorological station code
-#' @param .req_status character scalar with information on the status of a request
-#'
-#' @importFrom dplyr %>%
-#' @return a dataframe with variables filled with NA, except for id and request_status
-bdmep_template <- function(.id, .req_status){
+station_data_template <- function(.id, .req_status){
   varnames <- bdmep_description()[, "varname"]
   templ_df <- as.data.frame(t(rep(NA, length(varnames))), stringsAsFactors = FALSE)
   templ_df <- templ_df %>%
