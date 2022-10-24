@@ -18,4 +18,4 @@ You can install the development version of WeatherMaringa like so:
 
 ## To Do
 
-\[\] Fix API
+`[ ]` Fix API
